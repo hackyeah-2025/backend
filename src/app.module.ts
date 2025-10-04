@@ -7,10 +7,11 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { dbConfig } from '../../config/db.config';
 import { APP_INTERCEPTOR, APP_PIPE, Reflector } from '@nestjs/core';
-import { UsersModule } from '../users/users.module';
-import { AuthModule } from '../auth/auth.module';
+import { dbConfig } from './config/db.config';
+import { AuthModule } from './modules/auth/auth.module';
+import { ItinerariesModule } from './modules/itineraries/itineraries.module';
+import { UsersModule } from './modules/users/users.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { AuthModule } from '../auth/auth.module';
     TypeOrmModule.forRootAsync(dbConfig),
     AuthModule,
     UsersModule,
+    ItinerariesModule,
   ],
   controllers: [AppController],
   providers: [

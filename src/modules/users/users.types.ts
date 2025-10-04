@@ -13,5 +13,5 @@ export interface IUserEntity {
 
 export type IRegisterUserDto = Omit<
   NonFunctionProperties<UserEntity>,
-  'id' | 'currentToken' | 'isPremium'
+  'id' | 'currentToken' | 'isPremium' | 'itineraries'
 >;

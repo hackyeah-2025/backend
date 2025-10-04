@@ -1,6 +1,14 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  BaseEntity,
+  Column,
+  Entity,
+  JoinColumn,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { IUserEntity } from './users.types';
 import { Exclude } from 'class-transformer';
+import { ItineraryEntity } from '../itineraries/itinerary.entity';
 
 @Entity('users')
 export class UserEntity extends BaseEntity implements IUserEntity {
@@ -50,4 +58,8 @@ export class UserEntity extends BaseEntity implements IUserEntity {
     default: false,
   })
   isPremium: boolean;
+
+  @OneToMany(() => ItineraryEntity, (itinerary) => itinerary.user)
+  @JoinColumn()
+  itineraries: ItineraryEntity[];
 }
