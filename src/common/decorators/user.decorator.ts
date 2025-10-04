@@ -1,6 +1,6 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
-import { UserEntity } from '../../modules/users/user.entity';
 import { NonFunctionProperties } from '../../types/non-function-properties.type';
+import { UserEntity } from '../../database/user.entity';
 
 export const User = createParamDecorator(
   (data: keyof NonFunctionProperties<UserEntity>, ctx: ExecutionContext) => {
