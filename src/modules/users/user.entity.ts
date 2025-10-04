@@ -44,4 +44,10 @@ export class UserEntity extends BaseEntity implements IUserEntity {
     default: null,
   })
   currentToken?: string | null;
+
+  @Column({
+    type: 'bool',
+    default: false,
+  })
+  isPremium: boolean;
 }

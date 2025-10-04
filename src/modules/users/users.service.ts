@@ -53,4 +53,9 @@ export class UsersService {
     });
     return await newUser.save();
   }
+
+  async makePremium(userToMakePremium: UserEntity): Promise<UserEntity> {
+    userToMakePremium.isPremium = true;
+    return await userToMakePremium.save();
+  }
 }

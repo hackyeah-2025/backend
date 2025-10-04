@@ -8,6 +8,10 @@ export interface IUserEntity {
   halalOnly: boolean;
   vegan: boolean;
   kosherOnly: boolean;
+  isPremium: boolean;
 }
 
-export type IRegisterUserDto = Omit<NonFunctionProperties<UserEntity>, 'id'>;
+export type IRegisterUserDto = Omit<
+  NonFunctionProperties<UserEntity>,
+  'id' | 'currentToken' | 'isPremium'
+>;
