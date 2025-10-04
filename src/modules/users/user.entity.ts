@@ -1,13 +1,6 @@
 import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-
-export interface IUserEntity {
-  id: string;
-  email: string;
-  password: string;
-  halalOnly: boolean;
-  vegan: boolean;
-  kosherOnly: boolean;
-}
+import { IUserEntity } from './users.types';
+import { Exclude } from 'class-transformer';
 
 @Entity('users')
 export class UserEntity extends BaseEntity implements IUserEntity {
@@ -20,8 +13,10 @@ export class UserEntity extends BaseEntity implements IUserEntity {
   })
   email: string;
 
+  @Exclude()
   @Column({
-    type: 'text',
+    type: 'varchar',
+    length: 60,
   })
   password: string;
 
