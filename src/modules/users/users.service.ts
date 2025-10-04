@@ -6,17 +6,36 @@ import {
 } from '@nestjs/common';
 import { UserEntity } from './user.entity';
 import { RegisterUserDto } from './dto/register-user.dto';
-import { HashingService } from '../../commmon/hashing/hashing.service';
+import { HashingService } from '../../commmon/services/hashing/hashing.service';
+import { InjectDataSource } from '@nestjs/typeorm';
+import { DataSource } from 'typeorm';
 
 @Injectable()
 export class UsersService {
   constructor(
     @Inject(forwardRef(() => HashingService))
     private readonly hashingService: HashingService,
+
+    @InjectDataSource() private readonly dataSource: DataSource,
   ) {}
 
   async getAll(): Promise<UserEntity[]> {
     return await UserEntity.find();
+  }
+
+  async getUserById(id: string): Promise<UserEntity | null> {
+    return UserEntity.findOneBy({ id }) ?? null;
+  }
+
+  async getUserLoginDataByEmail(email: string): Promise<UserEntity | null> {
+    return (
+      (await this.dataSource
+        .getRepository(UserEntity)
+        .createQueryBuilder('u')
+        .addSelect(['u.id', 'u.email', 'u.password'])
+        .where('u.email = :email', { email })
+        .getOne()) ?? null
+    );
   }
 
   async register({

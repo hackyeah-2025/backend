@@ -37,4 +37,11 @@ export class UserEntity extends BaseEntity implements IUserEntity {
     type: 'bool',
   })
   kosherOnly: boolean;
+
+  @Column({
+    type: 'text',
+    nullable: true,
+    default: null,
+  })
+  currentToken?: string | null;
 }
