@@ -15,9 +15,7 @@ export class GetItinerariesPipe implements PipeTransform {
       forbidNonWhitelisted: true,
     });
 
-    if (errors.length > 0) {
-      throw new BadRequestException(errors);
-    }
+    if (errors.length > 0) throw new BadRequestException(errors);
 
     return Object.fromEntries(
       // eslint-disable-next-line @typescript-eslint/no-unused-vars

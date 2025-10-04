@@ -1,60 +1,106 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { ItineraryEntity } from './itinerary.entity';
+import {
+  forwardRef,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { ItineraryEntity } from '../../database/itinerary.entity';
 import { ItineraryFilters } from './itineraries.types';
+import { CreateItineraryDto } from './dto/create-itinerary.dto';
+import { TasksService } from '../tasks/tasks.service';
+import { TaskEntity } from '../../database/task.entity';
 
 @Injectable()
 export class ItinerariesService {
+  constructor(
+    @Inject(forwardRef(() => TasksService))
+    private readonly tasksService: TasksService,
+  ) {}
+
   async getAll(): Promise<ItineraryEntity[]> {
     return ItineraryEntity.find();
   }
 
-  async getAllByFilters(filters: ItineraryFilters): Promise<ItineraryEntity[]> {
+  async getAllByFilters({
+    category,
+    budget,
+    duration,
+    continent,
+    destination,
+    highRisk,
+    kidsFriendly,
+    participants,
+    title,
+  }: ItineraryFilters): Promise<ItineraryEntity[]> {
     const qb = ItineraryEntity.createQueryBuilder('itinerary');
 
-    if (filters.category)
+    if (category)
       qb.andWhere('itinerary.category ILIKE :category', {
-        category: `%${filters.category}%`,
+        category: `%${category}%`,
       });
 
-    if (filters.budget)
-      qb.andWhere('itinerary.budget <= :budget', { budget: filters.budget });
+    if (budget) qb.andWhere('itinerary.budget <= :budget', { budget });
 
-    if (filters.duration)
+    if (duration)
       qb.andWhere('itinerary.duration <= :duration', {
-        duration: filters.duration,
+        duration,
       });
 
-    if (filters.continent)
+    if (continent)
       qb.andWhere('itinerary.continent = :continent', {
-        continent: filters.continent,
+        continent,
       });
 
-    if (filters.destination)
+    if (destination)
       qb.andWhere('itinerary.destination ILIKE :destination', {
-        destination: `%${filters.destination}%`,
+        destination: `%${destination}%`,
       });
 
-    if (filters.highRisk !== undefined)
+    if (highRisk)
       qb.andWhere('itinerary.highRisk = :highRisk', {
-        highRisk: filters.highRisk,
+        highRisk,
       });
 
-    if (filters.kidsFriendly !== undefined)
+    if (kidsFriendly)
       qb.andWhere('itinerary.kidsFriendly = :kidsFriendly', {
-        kidsFriendly: filters.kidsFriendly,
+        kidsFriendly,
       });
 
-    if (filters.participants)
+    if (participants)
       qb.andWhere('itinerary.participants >= :participants', {
-        participants: filters.participants,
+        participants,
       });
+
+    if (title)
+      qb.andWhere('itinerary.title ILIKE :title', { title: `%${title}%` });
 
     return qb.getMany();
   }
 
   async getById(id: string): Promise<ItineraryEntity> {
-    const itinerary = await ItineraryEntity.findOneBy({ id });
+    const itinerary = await ItineraryEntity.findOne({
+      where: { id },
+      relations: ['tasks'],
+    });
     if (!itinerary) throw new NotFoundException('Itinerary not found');
     return itinerary;
+  }
+
+  async create({
+    tasks,
+    ...rest
+  }: CreateItineraryDto): Promise<ItineraryEntity> {
+    const newItinerary = ItineraryEntity.create({ ...rest });
+    await newItinerary.save();
+
+    const createdTasks: TaskEntity[] = await Promise.all(
+      tasks.map((task) => this.tasksService.create(task)),
+    );
+
+    newItinerary.tasks = createdTasks;
+
+    await newItinerary.save();
+
+    return newItinerary;
   }
 }

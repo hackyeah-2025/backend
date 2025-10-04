@@ -1,8 +1,8 @@
 import { Controller, Get, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { UserEntity } from './user.entity';
-import { User } from '../../commmon/decorators/user.decorator';
-import { Auth } from '../../commmon/decorators/auth.decorator';
+import { User } from '../../common/decorators/user.decorator';
+import { Auth } from '../../common/decorators/auth.decorator';
+import { UserEntity } from '../../database/user.entity';
 
 @Controller('users')
 export class UsersController {

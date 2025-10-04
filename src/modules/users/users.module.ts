@@ -1,8 +1,8 @@
 import { forwardRef, Module } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UsersController } from './users.controller';
-import { HashingModule } from '../../commmon/services/hashing/hashing.module';
-import { HashingService } from '../../commmon/services/hashing/hashing.service';
+import { HashingModule } from '../../common/services/hashing/hashing.module';
+import { HashingService } from '../../common/services/hashing/hashing.service';
 
 @Module({
   imports: [forwardRef(() => HashingModule)],

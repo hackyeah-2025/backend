@@ -1,4 +1,4 @@
-import { Continent } from '../itineraries.types';
+import { Continent, ItineraryFilters } from '../itineraries.types';
 import {
   IsOptional,
   IsEnum,
@@ -8,7 +8,7 @@ import {
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
-export class GetItinerariesQueryDto {
+export class GetItinerariesQueryDto implements ItineraryFilters {
   @IsOptional()
   @IsString()
   category?: string;
@@ -45,4 +45,8 @@ export class GetItinerariesQueryDto {
   @Type(() => Number)
   @IsNumber()
   participants?: number;
+
+  @IsOptional()
+  @IsString()
+  title?: string;
 }

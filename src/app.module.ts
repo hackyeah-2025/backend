@@ -12,6 +12,7 @@ import { dbConfig } from './config/db.config';
 import { AuthModule } from './modules/auth/auth.module';
 import { ItinerariesModule } from './modules/itineraries/itineraries.module';
 import { UsersModule } from './modules/users/users.module';
+import { TasksModule } from './modules/tasks/tasks.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { UsersModule } from './modules/users/users.module';
     AuthModule,
     UsersModule,
     ItinerariesModule,
+    TasksModule,
   ],
   controllers: [AppController],
   providers: [

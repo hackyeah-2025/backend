@@ -1,5 +1,5 @@
+import { UserEntity } from '../../database/user.entity';
 import { NonFunctionProperties } from '../../types/non-function-properties.type';
-import { UserEntity } from './user.entity';
 
 export interface IUserEntity {
   id: string;

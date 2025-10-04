@@ -6,9 +6,9 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { IUserEntity } from './users.types';
 import { Exclude } from 'class-transformer';
-import { ItineraryEntity } from '../itineraries/itinerary.entity';
+import { IUserEntity } from '../modules/users/users.types';
+import { ItineraryEntity } from './itinerary.entity';
 
 @Entity('users')
 export class UserEntity extends BaseEntity implements IUserEntity {

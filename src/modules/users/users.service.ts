@@ -4,11 +4,11 @@ import {
   Inject,
   Injectable,
 } from '@nestjs/common';
-import { UserEntity } from './user.entity';
 import { RegisterUserDto } from './dto/register-user.dto';
-import { HashingService } from '../../commmon/services/hashing/hashing.service';
+import { HashingService } from '../../common/services/hashing/hashing.service';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
+import { UserEntity } from '../../database/user.entity';
 
 @Injectable()
 export class UsersService {

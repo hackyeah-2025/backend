@@ -3,14 +3,25 @@ import {
   Column,
   Entity,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { UserEntity } from '../users/user.entity';
-import { Continent, IItineraryEntity } from './itineraries.types';
+import {
+  Continent,
+  IItineraryEntity,
+} from '../modules/itineraries/itineraries.types';
+import { UserEntity } from './user.entity';
+import { TaskEntity } from './task.entity';
 
 @Entity('itineraries')
 export class ItineraryEntity extends BaseEntity implements IItineraryEntity {
-  @PrimaryGeneratedColumn('uuid') id: string;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
+
+  @Column({
+    type: 'text',
+  })
+  title: string;
 
   @Column({
     type: 'int',
@@ -61,6 +72,16 @@ export class ItineraryEntity extends BaseEntity implements IItineraryEntity {
   })
   participants: number;
 
+  @Column({
+    type: 'text',
+    nullable: true,
+    default: null,
+  })
+  details?: string;
+
   @ManyToOne(() => UserEntity, (user) => user.itineraries)
   user: UserEntity;
+
+  @OneToMany(() => TaskEntity, (task) => task.itinerary)
+  tasks: TaskEntity[];
 }

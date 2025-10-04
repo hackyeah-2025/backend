@@ -11,9 +11,9 @@ import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { RegisterUserDto } from '../users/dto/register-user.dto';
 import { UsersService } from '../users/users.service';
-import { Auth } from '../../commmon/decorators/auth.decorator';
-import { User } from '../../commmon/decorators/user.decorator';
-import { UserEntity } from '../users/user.entity';
+import { Auth } from '../../common/decorators/auth.decorator';
+import { User } from '../../common/decorators/user.decorator';
+import { UserEntity } from '../../database/user.entity';
 
 @Controller('auth')
 export class AuthController {
