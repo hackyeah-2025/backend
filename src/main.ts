@@ -6,7 +6,11 @@ const bootstrap = async () => {
   const app = await NestFactory.create(AppModule);
 
   app.enableCors({
-    origin: '*', // '*' for hackathon
+    origin: '*',
+    methods: '*',
+    allowedHeaders: '*',
+    preflightContinue: false,
+    optionsSuccessStatus: 204,
   });
 
   const config = new DocumentBuilder()

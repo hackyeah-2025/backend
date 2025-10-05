@@ -9,12 +9,24 @@ import { ItineraryFilters } from './itineraries.types';
 import { CreateItineraryDto } from './dto/create-itinerary.dto';
 import { TasksService } from '../tasks/tasks.service';
 import { TaskEntity } from '../../database/task.entity';
+import { PlaceEntity } from '../../database/place.entity';
+import { PlacesService } from '../places/places.service';
+import { TransportEntity } from '../../database/transport.entity';
+import { TransportsService } from '../transports/transports.service';
+import { CreateAiItineraryDto } from './dto/create-ai-itinerary.dto';
+import fetch from 'node-fetch';
 
 @Injectable()
 export class ItinerariesService {
   constructor(
     @Inject(forwardRef(() => TasksService))
     private readonly tasksService: TasksService,
+
+    @Inject(forwardRef(() => PlacesService))
+    private readonly placesService: PlacesService,
+
+    @Inject(forwardRef(() => TransportsService))
+    private readonly transportsService: TransportsService,
   ) {}
 
   async getAll(): Promise<ItineraryEntity[]> {
@@ -88,19 +100,48 @@ export class ItinerariesService {
 
   async create({
     tasks,
+    places,
+    transports,
     ...rest
   }: CreateItineraryDto): Promise<ItineraryEntity> {
     const newItinerary = ItineraryEntity.create({ ...rest });
     await newItinerary.save();
 
     const createdTasks: TaskEntity[] = await Promise.all(
-      tasks.map((task) => this.tasksService.create(task)),
+      tasks.map(async (task) => await this.tasksService.create(task)),
     );
-
     newItinerary.tasks = createdTasks;
+
+    const createdPlaces: PlaceEntity[] = await Promise.all(
+      places.map(async (place) => await this.placesService.create(place)),
+    );
+    newItinerary.places = createdPlaces;
+
+    const createdTransports: TransportEntity[] = await Promise.all(
+      transports.map(
+        async (transport) => await this.transportsService.create(transport),
+      ),
+    );
+    newItinerary.transports = createdTransports;
 
     await newItinerary.save();
 
     return newItinerary;
+  }
+
+  async createWithAi(
+    createAiItineraryDto: CreateAiItineraryDto,
+  ): Promise<unknown> {
+    const res = await fetch('http://72.60.176.150:8000/ai/generateIteary', {
+      method: 'POST',
+      body: JSON.stringify(createAiItineraryDto),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    const body = await res.json();
+
+    return body;
   }
 }

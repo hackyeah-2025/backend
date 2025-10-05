@@ -13,11 +13,17 @@ import { NonFunctionProperties } from '../../../types/non-function-properties.ty
 import { CreateTaskDto } from '../../tasks/dto/create-task.dto';
 import { Continent } from '../itineraries.types';
 import { Type } from 'class-transformer';
+import { CreatePlaceDto } from '../../places/dto/create-place.dto';
+import { CreateTransportDto } from '../../transports/dto/create-transport.dto';
 
 export type ICreateItineraryDto = Omit<
   NonFunctionProperties<ItineraryEntity>,
-  'id' | 'user' | 'tasks'
-> & { tasks: CreateTaskDto[] };
+  'id' | 'user' | 'tasks' | 'places' | 'transports'
+> & {
+  tasks: CreateTaskDto[];
+  places: CreatePlaceDto[];
+  transports: CreateTransportDto[];
+};
 
 export class CreateItineraryDto implements ICreateItineraryDto {
   @IsString() @IsNotEmpty() title: string;
@@ -35,4 +41,12 @@ export class CreateItineraryDto implements ICreateItineraryDto {
 
   @IsJSON()
   details?: string;
+
+  @Type(() => CreatePlaceDto)
+  @ValidateNested({ each: true })
+  places: CreatePlaceDto[];
+
+  @Type(() => CreateTransportDto)
+  @ValidateNested({ each: true })
+  transports: CreateTransportDto[];
 }
