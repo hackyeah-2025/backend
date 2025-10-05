@@ -6,7 +6,7 @@ import { UserEntity } from '../../database/user.entity';
 
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(private readonly usersService: UsersService) { }
 
   @Get('/')
   @HttpCode(HttpStatus.OK)
@@ -25,5 +25,11 @@ export class UsersController {
   @HttpCode(HttpStatus.OK)
   makePremium(@User() user: UserEntity): Promise<UserEntity> {
     return this.usersService.makePremium(user);
+  }
+  @Auth()
+  @Get('/is-premium')
+  @HttpCode(HttpStatus.OK)
+  isPremium(@User() user: UserEntity): { isPremium: boolean } {
+    return this.usersService.checkIsPremium(user);
   }
 }

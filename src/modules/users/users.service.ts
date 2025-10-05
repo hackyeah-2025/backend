@@ -1,23 +1,17 @@
-import {
-  ConflictException,
-  forwardRef,
-  Inject,
-  Injectable,
-} from '@nestjs/common';
 import { RegisterUserDto } from './dto/register-user.dto';
 import { HashingService } from '../../common/services/hashing/hashing.service';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import { UserEntity } from '../../database/user.entity';
+import { Injectable, Inject, forwardRef, ConflictException } from '@nestjs/common';
 
 @Injectable()
 export class UsersService {
   constructor(
     @Inject(forwardRef(() => HashingService))
     private readonly hashingService: HashingService,
-
     @InjectDataSource() private readonly dataSource: DataSource,
-  ) {}
+  ) { }
 
   async getAll(): Promise<UserEntity[]> {
     return await UserEntity.find();
@@ -45,7 +39,6 @@ export class UsersService {
   }: RegisterUserDto): Promise<UserEntity> {
     const isEmailTaken = await UserEntity.existsBy({ email });
     if (isEmailTaken) throw new ConflictException('Email is already taken');
-
     const newUser = UserEntity.create({
       email,
       password: await this.hashingService.hash(password),
@@ -57,5 +50,9 @@ export class UsersService {
   async makePremium(userToMakePremium: UserEntity): Promise<UserEntity> {
     userToMakePremium.isPremium = true;
     return await userToMakePremium.save();
+  }
+
+  checkIsPremium(user: UserEntity): { isPremium: boolean } {
+    return { isPremium: user.isPremium || false };
   }
 }
