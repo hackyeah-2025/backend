@@ -13,6 +13,8 @@ import { PlaceEntity } from '../../database/place.entity';
 import { PlacesService } from '../places/places.service';
 import { TransportEntity } from '../../database/transport.entity';
 import { TransportsService } from '../transports/transports.service';
+import { CreateAiItineraryDto } from './dto/create-ai-itinerary.dto';
+import fetch from 'node-fetch';
 
 @Injectable()
 export class ItinerariesService {
@@ -125,5 +127,21 @@ export class ItinerariesService {
     await newItinerary.save();
 
     return newItinerary;
+  }
+
+  async createWithAi(
+    createAiItineraryDto: CreateAiItineraryDto,
+  ): Promise<unknown> {
+    const res = await fetch('http://72.60.176.150:8000/ai/generateIteary', {
+      method: 'POST',
+      body: JSON.stringify(createAiItineraryDto),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    const body = await res.json();
+
+    return body;
   }
 }

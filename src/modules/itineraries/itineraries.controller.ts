@@ -18,6 +18,7 @@ import { GetItinerariesPipe } from './pipes/get-itineraries.pipe';
 import { GetItinerariesQueryDto } from './dto/get-itineraries-query.dto';
 import { CreateItineraryDto } from './dto/create-itinerary.dto';
 import { TasksService } from '../tasks/tasks.service';
+import { CreateAiItineraryDto } from './dto/create-ai-itinerary.dto';
 
 @Controller('itineraries')
 export class ItinerariesController {
@@ -55,5 +56,13 @@ export class ItinerariesController {
   @HttpCode(HttpStatus.NO_CONTENT)
   completeTasks(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
     return this.tasksService.setAsCompletedByItineraryId(id);
+  }
+
+  @Post('/ai/generate')
+  @HttpCode(HttpStatus.CREATED)
+  createWithAi(
+    @Body() createAiItineraryDto: CreateAiItineraryDto,
+  ): Promise<unknown> {
+    return this.itinerariesService.createWithAi(createAiItineraryDto);
   }
 }
