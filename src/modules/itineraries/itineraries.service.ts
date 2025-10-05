@@ -9,12 +9,17 @@ import { ItineraryFilters } from './itineraries.types';
 import { CreateItineraryDto } from './dto/create-itinerary.dto';
 import { TasksService } from '../tasks/tasks.service';
 import { TaskEntity } from '../../database/task.entity';
+import { PlaceEntity } from '../../database/place.entity';
+import { PlacesService } from '../places/places.service';
 
 @Injectable()
 export class ItinerariesService {
   constructor(
     @Inject(forwardRef(() => TasksService))
     private readonly tasksService: TasksService,
+
+    @Inject(forwardRef(() => PlacesService))
+    private readonly placesService: PlacesService,
   ) {}
 
   async getAll(): Promise<ItineraryEntity[]> {
@@ -88,6 +93,7 @@ export class ItinerariesService {
 
   async create({
     tasks,
+    places,
     ...rest
   }: CreateItineraryDto): Promise<ItineraryEntity> {
     const newItinerary = ItineraryEntity.create({ ...rest });
@@ -96,8 +102,12 @@ export class ItinerariesService {
     const createdTasks: TaskEntity[] = await Promise.all(
       tasks.map((task) => this.tasksService.create(task)),
     );
-
     newItinerary.tasks = createdTasks;
+
+    const createdPlaces: PlaceEntity[] = await Promise.all(
+      places.map(async (place) => await this.placesService.create(place)),
+    );
+    newItinerary.places = createdPlaces;
 
     await newItinerary.save();
 

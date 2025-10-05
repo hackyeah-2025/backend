@@ -2,6 +2,7 @@ import {
   BaseEntity,
   Column,
   Entity,
+  JoinColumn,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -12,6 +13,7 @@ import {
 } from '../modules/itineraries/itineraries.types';
 import { UserEntity } from './user.entity';
 import { TaskEntity } from './task.entity';
+import { PlaceEntity } from './place.entity';
 
 @Entity('itineraries')
 export class ItineraryEntity extends BaseEntity implements IItineraryEntity {
@@ -82,6 +84,11 @@ export class ItineraryEntity extends BaseEntity implements IItineraryEntity {
   @ManyToOne(() => UserEntity, (user) => user.itineraries)
   user: UserEntity;
 
-  @OneToMany(() => TaskEntity, (task) => task.itinerary)
+  @OneToMany(() => TaskEntity, (task) => task.itinerary, { eager: true })
+  @JoinColumn()
   tasks: TaskEntity[];
+
+  @OneToMany(() => PlaceEntity, (place) => place.itinerary, { eager: true })
+  @JoinColumn()
+  places: PlaceEntity[];
 }
