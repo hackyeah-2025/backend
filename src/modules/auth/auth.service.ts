@@ -11,7 +11,7 @@ export class AuthService {
     private readonly usersService: UsersService,
     private readonly hashingService: HashingService,
     private readonly jwtService: JwtService,
-  ) {}
+  ) { }
 
   async login({ email, password }: LoginDto): Promise<{ accessToken: string }> {
     const user = await this.usersService.getUserLoginDataByEmail(email);

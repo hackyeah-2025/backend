@@ -5,9 +5,8 @@ import { AppModule } from './app.module';
 const bootstrap = async () => {
   const app = await NestFactory.create(AppModule);
 
-  // ✅ Enable CORS for frontend requests
   app.enableCors({
-    origin: 'http://localhost:3000', // or '*' for hackathon speed
+    origin: '*', // '*' for hackathon
   });
 
   const config = new DocumentBuilder()
@@ -19,6 +18,6 @@ const bootstrap = async () => {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, document);
 
-  await app.listen(process.env.PORT ?? 3001); // make sure it's not clashing with Next.js
+  await app.listen(process.env.PORT ?? 3001);
 };
 void bootstrap();
