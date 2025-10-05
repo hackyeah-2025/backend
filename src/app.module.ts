@@ -14,6 +14,7 @@ import { ItinerariesModule } from './modules/itineraries/itineraries.module';
 import { UsersModule } from './modules/users/users.module';
 import { TasksModule } from './modules/tasks/tasks.module';
 import { PlacesModule } from './modules/places/places.module';
+import { TransportsModule } from './modules/transports/transports.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { PlacesModule } from './modules/places/places.module';
     ItinerariesModule,
     TasksModule,
     PlacesModule,
+    TransportsModule,
   ],
   controllers: [AppController],
   providers: [

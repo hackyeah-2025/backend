@@ -11,6 +11,8 @@ import { TasksService } from '../tasks/tasks.service';
 import { TaskEntity } from '../../database/task.entity';
 import { PlaceEntity } from '../../database/place.entity';
 import { PlacesService } from '../places/places.service';
+import { TransportEntity } from '../../database/transport.entity';
+import { TransportsService } from '../transports/transports.service';
 
 @Injectable()
 export class ItinerariesService {
@@ -20,6 +22,9 @@ export class ItinerariesService {
 
     @Inject(forwardRef(() => PlacesService))
     private readonly placesService: PlacesService,
+
+    @Inject(forwardRef(() => TransportsService))
+    private readonly transportsService: TransportsService,
   ) {}
 
   async getAll(): Promise<ItineraryEntity[]> {
@@ -94,13 +99,14 @@ export class ItinerariesService {
   async create({
     tasks,
     places,
+    transports,
     ...rest
   }: CreateItineraryDto): Promise<ItineraryEntity> {
     const newItinerary = ItineraryEntity.create({ ...rest });
     await newItinerary.save();
 
     const createdTasks: TaskEntity[] = await Promise.all(
-      tasks.map((task) => this.tasksService.create(task)),
+      tasks.map(async (task) => await this.tasksService.create(task)),
     );
     newItinerary.tasks = createdTasks;
 
@@ -108,6 +114,13 @@ export class ItinerariesService {
       places.map(async (place) => await this.placesService.create(place)),
     );
     newItinerary.places = createdPlaces;
+
+    const createdTransports: TransportEntity[] = await Promise.all(
+      transports.map(
+        async (transport) => await this.transportsService.create(transport),
+      ),
+    );
+    newItinerary.transports = createdTransports;
 
     await newItinerary.save();
 

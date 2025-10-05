@@ -14,6 +14,7 @@ import {
 import { UserEntity } from './user.entity';
 import { TaskEntity } from './task.entity';
 import { PlaceEntity } from './place.entity';
+import { TransportEntity } from './transport.entity';
 
 @Entity('itineraries')
 export class ItineraryEntity extends BaseEntity implements IItineraryEntity {
@@ -91,4 +92,10 @@ export class ItineraryEntity extends BaseEntity implements IItineraryEntity {
   @OneToMany(() => PlaceEntity, (place) => place.itinerary, { eager: true })
   @JoinColumn()
   places: PlaceEntity[];
+
+  @OneToMany(() => TransportEntity, (transport) => transport.itinerary, {
+    eager: true,
+  })
+  @JoinColumn()
+  transports: TransportEntity[];
 }
