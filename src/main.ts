@@ -5,6 +5,14 @@ import { AppModule } from './app.module';
 const bootstrap = async () => {
   const app = await NestFactory.create(AppModule);
 
+  app.enableCors({
+    origin: '*',
+    methods: '*',
+    allowedHeaders: '*',
+    preflightContinue: false,
+    optionsSuccessStatus: 204,
+  });
+
   const config = new DocumentBuilder()
     .setTitle('HackYeah! 2025 API')
     .setDescription('API documentation for the HackYeah! 2025 main backend')
